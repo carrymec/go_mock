@@ -5,9 +5,10 @@ import (
 	"carrymec/go_mock/mocks"
 	"errors"
 	"fmt"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
-	"testing"
 )
 
 func TestService_SetUser(t *testing.T) {
@@ -95,4 +96,40 @@ func TestService_GetUser(t *testing.T) {
 	}
 }
 
+func TestService_GetUserByName(t *testing.T) {
+	type args struct {
+		name string
+	}
+	tests := []struct {
+		name string
 
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{
+			name: "ok",
+			args: args{name: "chen"},
+			want: "chen",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+			mfi := mocks.NewMockFooInterface(ctrl)
+			mfi.EXPECT().Get(tt.args.name).AnyTimes().Return("chen", nil)
+			s := Service{
+				client: mfi,
+			}
+			got, err := s.GetUserByName(tt.args.name)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Service.GetUserByName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("Service.GetUserByName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
