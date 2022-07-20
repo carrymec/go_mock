@@ -10,6 +10,7 @@ import (
 type FooInterface interface {
 	Get(name string) (string, error)
 	Set(user FooUser) (FooUser, error)
+	CreateUser(username, password, salt, nickname, profilePic string, status uint8) (FooUser, error)
 }
 
 type FooUser struct {
@@ -19,6 +20,11 @@ type FooUser struct {
 }
 
 type Foo struct {
+}
+
+func (u *Foo) CreateUser(username, password, salt, nickname, profilePic string, status uint8) (FooUser, error) {
+
+	return FooUser{}, nil
 }
 
 func (u *Foo) Set(user FooUser) (FooUser, error) {
